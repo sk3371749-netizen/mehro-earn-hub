@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plans - Mehro Earn Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0a0f;
+            color: #f5f5f7;
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(10,10,15,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,215,0,0.15);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h2 { color: #ffd700; font-size: 20px; }
+        .header-actions button {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.15);
+            color: #f5f5f7;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .header-actions button:hover { background: rgba(255,215,0,0.1); border-color: #ffd700; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+        .page-header { margin-bottom: 24px; }
+        .page-header h1 { font-size: 28px; }
+        .page-header h1 span { color: #ffd700; }
+        .page-header p { color: rgba(255,255,255,0.5); }
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .plan-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.1);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+        .plan-card:hover { border-color: #ffd700; transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .plan-card .name { font-size: 22px; font-weight: bold; color: #ffd700; }
+        .plan-card .price { font-size: 28px; font-weight: bold; margin: 12px 0; }
+        .plan-card .desc { color: rgba(255,255,255,0.5); font-size: 14px; margin-bottom: 16px; }
+        .plan-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+        .plan-details .item { background: rgba(255,255,255,0.03); padding: 8px; border-radius: 8px; text-align: center; }
+        .plan-details .item .label { font-size: 11px; color: rgba(255,255,255,0.3); }
+        .plan-details .item .value { font-size: 14px; font-weight: bold; }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #ffd700, #c9a800);
+            border: none;
+            border-radius: 10px;
+            color: #0a0a0f;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 12px;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(255,215,0,0.3); }
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.15);
+            color: #f5f5f7;
+        }
+        .btn-secondary:hover { background: rgba(255,215,0,0.1); }
+        .badge-featured {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ffd700, #c9a800);
+            color: #0a0a0f;
+            margin-bottom: 8px;
+        }
+        .profit-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            background: rgba(76,175,80,0.2);
+            color: #4caf50;
+            margin: 8px 0;
+        }
+        @media (max-width: 768px) { .plans-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>✨ Mehro Earn Hub</h2>
+    <div class="header-actions">
+        <button onclick="window.location.href='03-dashboard.html'">⬅ Back</button>
+        <button onclick="window.location.href='01-login.html'">Logout</button>
+    </div>
+</div>
+
+<div class="container">
+    <div class="page-header">
+        <h1>📈 <span>Investment Plans</span></h1>
+        <p>Choose a plan that suits your investment goals</p>
+    </div>
+
+    <div class="plans-grid" id="plansContainer">
+        <div style="text-align:center;color:rgba(255,255,255,0.3);padding:40px;">Loading plans...</div>
+    </div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) { window.location.href = '01-login.html'; }
+
+async function loadPlans() {
+    try {
+        const res = await fetch('/api/plans');
+        const data = await res.json();
+        if (!data.success) { throw new Error(data.message); }
+        
+        const plans = data.data.plans;
+        const container = document.getElementById('plansContainer');
+        
+        if (!plans || plans.length === 0) {
+            container.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);padding:40px;">No plans available</div>';
+            return;
+        }
+        
+        container.innerHTML = plans.map(plan => `
+            <div class="plan-card">
+                ${plan.is_featured ? '<div class="badge-featured">⭐ FEATURED</div>' : ''}
+                <div class="name">${plan.plan_name}</div>
+                <div class="desc">${plan.description || 'No description available'}</div>
+                <div class="price">${plan.price} PKR</div>
+                <div class="profit-badge">📈 ${Math.round((plan.total_profit - plan.price) / plan.price * 100)}% Profit</div>
+                <div class="plan-details">
+                    <div class="item"><div class="label">Daily Income</div><div class="value">${plan.daily_income} PKR</div></div>
+                    <div class="item"><div class="label">Duration</div><div class="value">${plan.duration} Days</div></div>
+                    <div class="item"><div class="label">Total Profit</div><div class="value">${plan.total_profit} PKR</div></div>
+                    <div class="item"><div class="label">Min/Max Withdraw</div><div class="value">${plan.min_withdraw} / ${plan.max_withdraw}</div></div>
+                </div>
+                <button class="btn" onclick="activatePlan(${plan.id})">🚀 Activate Plan</button>
+            </div>
+        `).join('');
+    } catch (error) {
+        document.getElementById('plansContainer').innerHTML = '<div style="text-align:center;color:#f44336;padding:40px;">Failed to load plans</div>';
+    }
+}
+
+function activatePlan(planId) {
+    window.location.href = `05-activate-plan.html?plan=${planId}`;
+}
+
+loadPlans();
+</script>
+
+</body>
+</html>

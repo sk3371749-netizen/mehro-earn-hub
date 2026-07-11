@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet - Mehro Earn Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0a0f;
+            color: #f5f5f7;
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(10,10,15,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,215,0,0.15);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h2 { color: #ffd700; font-size: 20px; }
+        .header-actions button {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.15);
+            color: #f5f5f7;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .header-actions button:hover { background: rgba(255,215,0,0.1); border-color: #ffd700; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+        .page-header { margin-bottom: 24px; }
+        .page-header h1 { font-size: 28px; }
+        .page-header h1 span { color: #ffd700; }
+        .page-header p { color: rgba(255,255,255,0.5); }
+        .balance-card {
+            background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,215,0,0.02));
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .balance-card .label { color: rgba(255,255,255,0.5); font-size: 14px; }
+        .balance-card .amount { font-size: 48px; font-weight: bold; color: #ffd700; }
+        .balance-card .sub { color: rgba(255,255,255,0.3); font-size: 14px; margin-top: 8px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.1);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .stat-card .label { color: rgba(255,255,255,0.3); font-size: 12px; }
+        .stat-card .value { font-size: 18px; font-weight: bold; }
+        .stat-card .value.gold { color: #ffd700; }
+        .stat-card .value.green { color: #4caf50; }
+        .stat-card .value.red { color: #f44336; }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .card h3 { margin-bottom: 16px; color: #ffd700; }
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .transaction-item:last-child { border-bottom: none; }
+        .transaction-item .left { display: flex; flex-direction: column; }
+        .transaction-item .left .title { font-size: 14px; }
+        .transaction-item .left .date { font-size: 11px; color: rgba(255,255,255,0.3); }
+        .transaction-item .amount.positive { color: #4caf50; }
+        .transaction-item .amount.negative { color: #f44336; }
+        .btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #ffd700, #c9a800);
+            border: none;
+            border-radius: 10px;
+            color: #0a0a0f;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(255,215,0,0.3); }
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.15);
+            color: #f5f5f7;
+        }
+        .btn-secondary:hover { background: rgba(255,215,0,0.1); }
+        .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+        @media (max-width: 768px) { .balance-card .amount { font-size: 32px; } }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>✨ Mehro Earn Hub</h2>
+    <div class="header-actions">
+        <button onclick="window.location.href='03-dashboard.html'">⬅ Back</button>
+        <button onclick="window.location.href='01-login.html'">Logout</button>
+    </div>
+</div>
+
+<div class="container">
+    <div class="page-header">
+        <h1>💰 <span>My Wallet</span></h1>
+        <p>View your balance and transaction history</p>
+    </div>
+
+    <div class="balance-card">
+        <div class="label">Available Balance</div>
+        <div class="amount" id="walletBalance">0 PKR</div>
+        <div class="sub">Pending: <span id="pendingBalance">0 PKR</span> | Total Earnings: <span id="totalEarnings">0 PKR</span></div>
+    </div>
+
+    <div class="actions" style="margin-bottom:24px;">
+        <a href="07-deposit.html" class="btn">💰 Deposit</a>
+        <a href="08-withdraw.html" class="btn">💸 Withdraw</a>
+        <a href="09-transactions.html" class="btn btn-secondary">📊 Transactions</a>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card"><div class="label">Today's Earnings</div><div class="value gold" id="todayEarnings">0 PKR</div></div>
+        <div class="stat-card"><div class="label">Total Deposits</div><div class="value green" id="totalDeposits">0 PKR</div></div>
+        <div class="stat-card"><div class="label">Total Withdraws</div><div class="value red" id="totalWithdraws">0 PKR</div></div>
+        <div class="stat-card"><div class="label">Referral Bonus</div><div class="value gold" id="referralBonus">0 PKR</div></div>
+        <div class="stat-card"><div class="label">Referral Salary</div><div class="value" id="referralSalary">0 PKR</div></div>
+        <div class="stat-card"><div class="label">Manual Bonus</div><div class="value" id="manualBonus">0 PKR</div></div>
+    </div>
+
+    <div class="card">
+        <h3>📊 Recent Transactions</h3>
+        <div id="transactionsList">
+            <div style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;">No transactions yet</div>
+        </div>
+    </div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) { window.location.href = '01-login.html'; }
+
+async function loadWallet() {
+    try {
+        const res = await fetch('/api/wallet/summary', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (!data.success) { throw new Error(data.message); }
+        
+        const info = data.data;
+        document.getElementById('walletBalance').textContent = (info.balance?.wallet_balance || 0) + ' PKR';
+        document.getElementById('pendingBalance').textContent = (info.balance?.pending_balance || 0) + ' PKR';
+        document.getElementById('totalEarnings').textContent = (info.balance?.total_earnings || 0) + ' PKR';
+        document.getElementById('todayEarnings').textContent = (info.today_earnings || 0) + ' PKR';
+        
+        const summary = info.summary || {};
+        document.getElementById('totalDeposits').textContent = (summary.total_deposits || 0) + ' PKR';
+        document.getElementById('totalWithdraws').textContent = (summary.total_withdraws || 0) + ' PKR';
+        document.getElementById('referralBonus').textContent = (summary.referral_bonus || 0) + ' PKR';
+        document.getElementById('referralSalary').textContent = (summary.referral_salary || 0) + ' PKR';
+        document.getElementById('manualBonus').textContent = (summary.manual_bonus || 0) + ' PKR';
+        
+        // Load transactions
+        await loadTransactions();
+    } catch (error) {
+        console.error('Wallet error:', error);
+    }
+}
+
+async function loadTransactions() {
+    try {
+        const res = await fetch('/api/wallet/transactions?limit=5', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (!data.success) { throw new Error(data.message); }
+        
+        const txns = data.data.data || [];
+        const list = document.getElementById('transactionsList');
+        
+        if (txns.length === 0) {
+            list.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;">No transactions yet</div>';
+            return;
+        }
+        
+        list.innerHTML = txns.map(t => `
+            <div class="transaction-item">
+                <div class="left">
+                    <span class="title">${t.description || t.type}</span>
+                    <span class="date">${new Date(t.transaction_date).toLocaleDateString()}</span>
+                </div>
+                <span class="amount ${t.amount > 0 ? 'positive' : 'negative'}">${t.amount > 0 ? '+' : ''}${t.amount} PKR</span>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Transactions error:', error);
+    }
+}
+
+loadWallet();
+</script>
+
+</body>
+</html>

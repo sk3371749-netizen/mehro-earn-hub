@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Mehro Earn Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0a0f;
+            color: #f5f5f7;
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(10,10,15,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,215,0,0.15);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h2 { color: #ffd700; font-size: 20px; }
+        .header-actions { display: flex; gap: 12px; align-items: center; }
+        .header-actions button {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.15);
+            color: #f5f5f7;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .header-actions button:hover { background: rgba(255,215,0,0.1); border-color: #ffd700; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+        .welcome { margin-bottom: 24px; }
+        .welcome h1 { font-size: 28px; }
+        .welcome h1 span { color: #ffd700; }
+        .welcome p { color: rgba(255,255,255,0.5); }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.1);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .stat-card:hover { border-color: #ffd700; transform: translateY(-4px); }
+        .stat-card .label { color: rgba(255,255,255,0.5); font-size: 13px; }
+        .stat-card .value { font-size: 24px; font-weight: bold; color: #ffd700; }
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .quick-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.1);
+            border-radius: 12px;
+            padding: 16px;
+            color: #f5f5f7;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .quick-btn:hover { background: rgba(255,215,0,0.1); border-color: #ffd700; transform: translateY(-2px); }
+        .quick-btn i { font-size: 24px; display: block; margin-bottom: 8px; }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .card h3 { margin-bottom: 16px; color: #ffd700; }
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .transaction-item:last-child { border-bottom: none; }
+        .transaction-item .amount.positive { color: #4caf50; }
+        .transaction-item .amount.negative { color: #f44336; }
+        .plan-status {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255,215,0,0.05);
+            border: 1px solid rgba(255,215,0,0.15);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        .plan-status .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .badge-active { background: rgba(76,175,80,0.2); color: #4caf50; }
+        .badge-inactive { background: rgba(255,152,0,0.2); color: #ff9800; }
+        .badge-expired { background: rgba(244,67,54,0.2); color: #f44336; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>✨ Mehro Earn Hub</h2>
+    <div class="header-actions">
+        <button onclick="window.location.href='01-login.html'">Logout</button>
+    </div>
+</div>
+
+<div class="container">
+    <div class="welcome">
+        <h1>Welcome back, <span id="userName">User</span>!</h1>
+        <p>Here's your investment overview</p>
+    </div>
+
+    <div class="plan-status" id="planStatus">
+        <div>
+            <strong id="planName">No Active Plan</strong>
+            <div id="planExpiry" style="font-size:13px;color:rgba(255,255,255,0.5);">No active plan</div>
+        </div>
+        <span class="badge badge-inactive" id="planBadge">Inactive</span>
+        <div style="margin-left:auto;text-align:right;">
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);">Daily Income</div>
+            <div style="font-size:20px;font-weight:bold;color:#ffd700;" id="dailyIncome">0 PKR</div>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card"><div class="label">Wallet Balance</div><div class="value" id="walletBalance">0 PKR</div></div>
+        <div class="stat-card"><div class="label">Today's Earnings</div><div class="value" id="todayEarnings">0 PKR</div></div>
+        <div class="stat-card"><div class="label">Total Referrals</div><div class="value" id="totalReferrals">0</div></div>
+        <div class="stat-card"><div class="label">Total Deposits</div><div class="value" id="totalDeposits">0 PKR</div></div>
+        <div class="stat-card"><div class="label">Total Withdraws</div><div class="value" id="totalWithdraws">0 PKR</div></div>
+        <div class="stat-card"><div class="label">Total Earnings</div><div class="value" id="totalEarnings">0 PKR</div></div>
+    </div>
+
+    <div class="quick-actions">
+        <a href="04-plans.html" class="quick-btn">📈 Plans</a>
+        <a href="05-activate-plan.html" class="quick-btn">🚀 Activate</a>
+        <a href="07-deposit.html" class="quick-btn">💰 Deposit</a>
+        <a href="08-withdraw.html" class="quick-btn">💸 Withdraw</a>
+        <a href="10-referral.html" class="quick-btn">👥 Refer</a>
+        <a href="11-support.html" class="quick-btn">🆘 Support</a>
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <h3>📊 Recent Transactions</h3>
+            <div id="transactionsList">
+                <div style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;">No transactions yet</div>
+            </div>
+        </div>
+        <div class="card">
+            <h3>🔔 Notifications</h3>
+            <div id="notificationsList">
+                <div style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;">No notifications</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) { window.location.href = '01-login.html'; }
+
+async function loadDashboard() {
+    try {
+        const res = await fetch('/api/user/dashboard', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (!data.success) { window.location.href = '01-login.html'; return; }
+        
+        const stats = data.data.stats;
+        document.getElementById('userName').textContent = stats.full_name || 'User';
+        document.getElementById('walletBalance').textContent = (stats.wallet_balance || 0) + ' PKR';
+        document.getElementById('todayEarnings').textContent = (stats.today_earnings || 0) + ' PKR';
+        document.getElementById('totalReferrals').textContent = stats.total_referrals || 0;
+        document.getElementById('totalDeposits').textContent = (stats.total_deposits || 0) + ' PKR';
+        document.getElementById('totalWithdraws').textContent = (stats.total_withdraws || 0) + ' PKR';
+        document.getElementById('totalEarnings').textContent = (stats.total_earnings || 0) + ' PKR';
+        
+        // Plan Status
+        if (stats.current_plan_id) {
+            document.getElementById('planName').textContent = stats.current_plan_name || 'Active Plan';
+            document.getElementById('planExpiry').textContent = 'Expires: ' + (stats.plan_expiry ? new Date(stats.plan_expiry).toLocaleDateString() : 'N/A');
+            document.getElementById('planBadge').textContent = 'Active';
+            document.getElementById('planBadge').className = 'badge badge-active';
+            document.getElementById('dailyIncome').textContent = (stats.plan_daily_income || 0) + ' PKR';
+        }
+        
+        // Transactions
+        const txns = data.data.recent_transactions || [];
+        const txnsList = document.getElementById('transactionsList');
+        if (txns.length === 0) {
+            txnsList.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;">No transactions yet</div>';
+        } else {
+            txnsList.innerHTML = txns.map(t => `
+                <div class="transaction-item">
+                    <span>${t.description || t.type}</span>
+                    <span class="amount ${t.amount > 0 ? 'positive' : 'negative'}">${t.amount > 0 ? '+' : ''}${t.amount} PKR</span>
+                </div>
+            `).join('');
+        }
+        
+        // Notifications
+        const notifs = data.data.recent_notifications || [];
+        const notifsList = document.getElementById('notificationsList');
+        if (notifs.length === 0) {
+            notifsList.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;">No notifications</div>';
+        } else {
+            notifsList.innerHTML = notifs.map(n => `
+                <div class="transaction-item">
+                    <span>${n.title}</span>
+                    <span style="color:rgba(255,255,255,0.3);font-size:12px;">${new Date(n.created_at).toLocaleDateString()}</span>
+                </div>
+            `).join('');
+        }
+    } catch (error) {
+        console.error('Dashboard error:', error);
+    }
+}
+
+loadDashboard();
+</script>
+
+</body>
+</html>

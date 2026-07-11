@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activate Plan - Mehro Earn Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0a0f;
+            color: #f5f5f7;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .header {
+            background: rgba(10,10,15,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,215,0,0.15);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin: -20px -20px 20px -20px;
+        }
+        .header h2 { color: #ffd700; font-size: 20px; }
+        .header-actions button {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.15);
+            color: #f5f5f7;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .header-actions button:hover { background: rgba(255,215,0,0.1); border-color: #ffd700; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .plan-summary {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.15);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .plan-summary .name { font-size: 24px; font-weight: bold; color: #ffd700; }
+        .plan-summary .price { font-size: 32px; font-weight: bold; margin: 12px 0; }
+        .plan-summary .details { color: rgba(255,255,255,0.5); font-size: 14px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; color: #f5f5f7; font-size: 14px; margin-bottom: 6px; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.15);
+            border-radius: 10px;
+            color: #f5f5f7;
+            font-size: 15px;
+        }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: #ffd700; }
+        .form-group select option { background: #1a1a2e; }
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ffd700, #c9a800);
+            border: none;
+            border-radius: 10px;
+            color: #0a0a0f;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(255,215,0,0.3); }
+        .alert {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        .alert-danger { background: rgba(244,67,54,0.1); border: 1px solid rgba(244,67,54,0.2); color: #f44336; }
+        .alert-success { background: rgba(76,175,80,0.1); border: 1px solid rgba(76,175,80,0.2); color: #4caf50; }
+        .payment-methods { display: grid; gap: 12px; margin: 16px 0; }
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,215,0,0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .payment-method:hover { border-color: #ffd700; background: rgba(255,215,0,0.05); }
+        .payment-method input[type="radio"] { accent-color: #ffd700; }
+        .payment-method .icon { font-size: 24px; }
+        .payment-method .info { flex: 1; }
+        .payment-method .info .name { font-weight: bold; }
+        .payment-method .info .detail { font-size: 12px; color: rgba(255,255,255,0.3); }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>✨ Mehro Earn Hub</h2>
+    <div class="header-actions">
+        <button onclick="window.location.href='04-plans.html'">⬅ Back</button>
+        <button onclick="window.location.href='01-login.html'">Logout</button>
+    </div>
+</div>
+
+<div class="container">
+    <div id="alertBox"></div>
+
+    <div class="plan-summary" id="planSummary">
+        <div style="color:rgba(255,255,255,0.3);">Loading plan details...</div>
+    </div>
+
+    <form id="activationForm">
+        <div class="payment-methods" id="paymentMethods">
+            <div style="color:rgba(255,255,255,0.3);">Loading payment methods...</div>
+        </div>
+
+        <div class="form-group">
+            <label>Account Name</label>
+            <input type="text" id="accountName" placeholder="Enter account holder name" required>
+        </div>
+        <div class="form-group">
+            <label>Account Number</label>
+            <input type="text" id="accountNumber" placeholder="Enter account number" required>
+        </div>
+        <div class="form-group">
+            <label>Transaction ID</label>
+            <input type="text" id="transactionId" placeholder="Enter transaction ID" required>
+        </div>
+        <div class="form-group">
+            <label>Screenshot (Optional)</label>
+            <input type="file" id="screenshot" accept="image/*">
+        </div>
+
+        <button type="submit" class="btn">🚀 Submit Activation Request</button>
+    </form>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) { window.location.href = '01-login.html'; }
+
+const urlParams = new URLSearchParams(window.location.search);
+const planId = urlParams.get('plan');
+
+if (!planId) {
+    document.getElementById('planSummary').innerHTML = '<div style="color:#f44336;">No plan selected. <a href="04-plans.html" style="color:#ffd700;">Go back to plans</a></div>';
+}
+
+async function loadPlan() {
+    try {
+        const res = await fetch(`/api/plans/${planId}`);
+        const data = await res.json();
+        if (!data.success) { throw new Error(data.message); }
+        
+        const plan = data.data.plan;
+        document.getElementById('planSummary').innerHTML = `
+            <div class="name">${plan.plan_name}</div>
+            <div class="price">${plan.price} PKR</div>
+            <div class="details">Daily Income: ${plan.daily_income} PKR | Duration: ${plan.duration} Days</div>
+            <div class="details">Total Profit: ${plan.total_profit} PKR</div>
+        `;
+    } catch (error) {
+        document.getElementById('planSummary').innerHTML = '<div style="color:#f44336;">Failed to load plan details</div>';
+    }
+}
+
+async function loadPaymentMethods() {
+    try {
+        const res = await fetch('/api/settings/public');
+        const data = await res.json();
+        const methods = data.data.payment_methods || [];
+        
+        const container = document.getElementById('paymentMethods');
+        if (methods.length === 0) {
+            container.innerHTML = '<div style="color:rgba(255,255,255,0.3);">No payment methods available</div>';
+            return;
+        }
+        
+        container.innerHTML = methods.map((m, i) => `
+            <label class="payment-method">
+                <input type="radio" name="payment_method" value="${m.method_name}" ${i === 0 ? 'checked' : ''}>
+                <div class="info">
+                    <div class="name">${m.method_name}</div>
+                    <div class="detail">${m.account_name || ''} ${m.account_number || ''}</div>
+                </div>
+                ${m.qr_code ? `<img src="${m.qr_code}" style="width:50px;height:50px;border-radius:8px;object-fit:contain;">` : ''}
+            </label>
+        `).join('');
+    } catch (error) {
+        console.error('Payment methods error:', error);
+    }
+}
+
+document.getElementById('activationForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const alertBox = document.getElementById('alertBox');
+    alertBox.innerHTML = '';
+    
+    const payment_method = document.querySelector('input[name="payment_method"]:checked');
+    const account_name = document.getElementById('accountName').value.trim();
+    const account_number = document.getElementById('accountNumber').value.trim();
+    const transaction_id = document.getElementById('transactionId').value.trim();
+    const screenshot = document.getElementById('screenshot').files[0];
+    
+    if (!payment_method) {
+        alertBox.innerHTML = '<div class="alert alert-danger">Please select a payment method</div>';
+        return;
+    }
+    if (!account_name || !account_number || !transaction_id) {
+        alertBox.innerHTML = '<div class="alert alert-danger">Please fill in all fields</div>';
+        return;
+    }
+    
+    let screenshotPath = null;
+    if (screenshot) {
+        const formData = new FormData();
+        formData.append('file', screenshot);
+        try {
+            const uploadRes = await fetch('/api/upload', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token },
+                body: formData
+            });
+            const uploadData = await uploadRes.json();
+            if (uploadData.success) {
+                screenshotPath = uploadData.data.file_path;
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+        }
+    }
+    
+    const data = {
+        plan_id: planId,
+        payment_method: payment_method.value,
+        account_name,
+        account_number,
+        transaction_id,
+        screenshot: screenshotPath
+    };
+    
+    try {
+        const res = await fetch('/api/plans/activate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        
+        if (result.success) {
+            alertBox.innerHTML = '<div class="alert alert-success">✅ Activation request submitted! Redirecting...</div>';
+            setTimeout(() => { window.location.href = '03-dashboard.html'; }, 2000);
+        } else {
+            alertBox.innerHTML = '<div class="alert alert-danger">❌ ' + result.message + '</div>';
+        }
+    } catch (error) {
+        alertBox.innerHTML = '<div class="alert alert-danger">❌ Activation failed. Please try again.</div>';
+    }
+});
+
+loadPlan();
+loadPaymentMethods();
+</script>
+
+</body>
+</html>
