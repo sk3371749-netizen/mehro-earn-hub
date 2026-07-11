@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support - Mehro Earn Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0a0f;
+            color: #f5f5f7;
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(10,10,15,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,215,0,0.15);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h2 { color: #ffd700; font-size: 20px; }
+        .header-actions button {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.15);
+            color: #f5f5f7;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .header-actions button:hover { background: rgba(255,215,0,0.1); border-color: #ffd700; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+        .page-header { margin-bottom: 24px; }
+        .page-header h1 { font-size: 28px; }
+        .page-header h1 span { color: #ffd700; }
+        .page-header p { color: rgba(255,255,255,0.5); }
+        .btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #ffd700, #c9a800);
+            border: none;
+            border-radius: 10px;
+            color: #0a0a0f;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(255,215,0,0.3); }
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.15);
+            color: #f5f5f7;
+        }
+        .btn-secondary:hover { background: rgba(255,215,0,0.1); }
+        .btn-danger {
+            background: rgba(244,67,54,0.2);
+            border: 1px solid rgba(244,67,54,0.3);
+            color: #f44336;
+        }
+        .btn-danger:hover { background: rgba(244,67,54,0.3); }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .card h3 { margin-bottom: 16px; color: #ffd700; }
+        .ticket-item {
+            padding: 16px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255,215,0,0.05);
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .ticket-item:hover { border-color: rgba(255,215,0,0.2); }
+        .ticket-item .header { display: flex; justify-content: space-between; align-items: center; background: transparent; padding: 0; border: none; margin-bottom: 8px; }
+        .ticket-item .header .subject { font-weight: bold; font-size: 16px; }
+        .ticket-item .header .id { color: rgba(255,255,255,0.3); font-size: 12px; }
+        .ticket-item .body { color: rgba(255,255,255,0.5); font-size: 14px; }
+        .ticket-item .footer { display: flex; gap: 12px; margin-top: 8px; font-size: 12px; color: rgba(255,255,255,0.3); }
+        .badge {
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .badge-open { background: rgba(255,152,0,0.2); color: #ff9800; }
+        .badge-in_progress { background: rgba(33,150,243,0.2); color: #2196f3; }
+        .badge-resolved { background: rgba(76,175,80,0.2); color: #4caf50; }
+        .badge-closed { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); }
+        .badge-low { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); }
+        .badge-medium { background: rgba(33,150,243,0.2); color: #2196f3; }
+        .badge-high { background: rgba(255,152,0,0.2); color: #ff9800; }
+        .badge-urgent { background: rgba(244,67,54,0.2); color: #f44336; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; color: #f5f5f7; font-size: 14px; margin-bottom: 6px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.15);
+            border-radius: 10px;
+            color: #f5f5f7;
+            font-size: 15px;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #ffd700; }
+        .form-group select option { background: #1a1a2e; }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal.show { display: flex; }
+        .modal-content {
+            background: #1a1a2e;
+            border: 1px solid rgba(255,215,0,0.15);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .modal-header h3 { color: #ffd700; }
+        .modal-close {
+            background: none;
+            border: none;
+            color: #f5f5f7;
+            font-size: 24px;
+            cursor: pointer;
+            opacity: 0.5;
+        }
+        .modal-close:hover { opacity: 1; }
+        .reply-item {
+            padding: 12px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .reply-item .header { background: transparent; padding: 0; border: none; display: flex; justify-content: space-between; }
+        .reply-item .header .name { font-weight: bold; font-size: 14px; }
+        .reply-item .header .time { font-size: 12px; color: rgba(255,255,255,0.3); }
+        .reply-item .body { font-size: 14px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+        .reply-item.admin { border-left: 3px solid #ffd700; }
+        .empty { text-align: center; padding: 40px; color: rgba(255,255,255,0.3); }
+        @media (max-width: 768px) { .ticket-item .header { flex-direction: column; align-items: flex-start; gap: 4px; } }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>✨ Mehro Earn Hub</h2>
+    <div class="header-actions">
+        <button onclick="window.location.href='03-dashboard.html'">⬅ Back</button>
+        <button onclick="window.location.href='01-login.html'">Logout</button>
+    </div>
+</div>
+
+<div class="container">
+    <div class="page-header">
+        <h1>🆘 <span>Support Center</span></h1>
+        <p>Get help with your account and investments</p>
+    </div>
+
+    <div style="margin-bottom:20px;">
+        <button class="btn" onclick="showCreateTicket()">➕ Create New Ticket</button>
+    </div>
+
+    <div class="card">
+        <h3>📋 My Tickets</h3>
+        <div id="ticketsList">
+            <div class="empty">Loading tickets...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="ticketModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Ticket</h3>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div id="modalBody"></div>
+    </div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) { window.location.href = '01-login.html'; }
+
+async function loadTickets() {
+    try {
+        const res = await fetch('/api/support', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (!data.success) { throw new Error(data.message); }
+        
+        const tickets = data.data.data || [];
+        const container = document.getElementById('ticketsList');
+        
+        if (tickets.length === 0) {
+            container.innerHTML = '<div class="empty">No support tickets yet</div>';
+            return;
+        }
+        
+        container.innerHTML = tickets.map(t => `
+            <div class="ticket-item" onclick="viewTicket(${t.id})">
+                <div class="header">
+                    <span class="subject">${t.subject}</span>
+                    <span class="id">#${t.ticket_id}</span>
+                </div>
+                <div class="body">${t.message.substring(0, 120)}${t.message.length > 120 ? '...' : ''}</div>
+                <div class="footer">
+                    <span class="badge badge-${t.status}">${t.status.replace('_', ' ').toUpperCase()}</span>
+                    <span class="badge badge-${t.priority}">${t.priority.toUpperCase()}</span>
+                    <span>${t.category}</span>
+                    <span>${new Date(t.created_at).toLocaleDateString()}</span>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        document.getElementById('ticketsList').innerHTML = '<div class="empty">Failed to load tickets</div>';
+    }
+}
+
+async function viewTicket(ticketId) {
+    try {
+        const res = await fetch(`/api/support/${ticketId}`, {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (!data.success) { throw new Error(data.message); }
+        
+        const ticket = data.data.ticket;
+        const replies = data.data.replies || [];
+        
+        document.getElementById('modalTitle').textContent = `#${ticket.ticket_id} - ${ticket.subject}`;
+        
+        let repliesHtml = replies.map(r => `
+            <div class="reply-item ${r.is_admin ? 'admin' : ''}">
+                <div class="header">
+                    <span class="name">${r.is_admin ? '👨‍💼 Admin' : '👤 You'}</span>
+                    <span class="time">${new Date(r.created_at).toLocaleString()}</span>
+                </div>
+                <div class="body">${r.message}</div>
+            </div>
+        `).join('');
+        
+        if (replies.length === 0) {
+            repliesHtml = '<div class="empty">No replies yet</div>';
+        }
+        
+        document.getElementById('modalBody').innerHTML = `
+            <div style="margin-bottom:16px;">
+                <p><strong>Category:</strong> ${ticket.category}</p>
+                <p><strong>Status:</strong> <span class="badge badge-${ticket.status}">${ticket.status}</span></p>
+                <p><strong>Priority:</strong> <span class="badge badge-${ticket.priority}">${ticket.priority}</span></p>
+                <p><strong>Created:</strong> ${new Date(ticket.created_at).toLocaleString()}</p>
+                <div style="background:rgba(255,255,255,0.03);padding:12px;border-radius:8px;margin-top:12px;">
+                    <p>${ticket.message}</p>
+                </div>
+            </div>
+            <div style="border-top:1px solid rgba(255,255,255,0.05);padding-top:16px;">
+                <h4>Replies</h4>
+                ${repliesHtml}
+            </div>
+            ${ticket.status !== 'closed' ? `
+                <div style="border-top:1px solid rgba(255,255,255,0.05);padding-top:16px;margin-top:16px;">
+                    <h4>Add Reply</h4>
+                    <form id="replyForm" onsubmit="submitReply(event, ${ticket.id})">
+                        <div class="form-group">
+                            <textarea id="replyMessage" placeholder="Type your reply..." rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn">📤 Send Reply</button>
+                        <button type="button" class="btn btn-danger" onclick="closeTicket(${ticket.id})" style="margin-top:8px;">🔒 Close Ticket</button>
+                    </form>
+                </div>
+            ` : `
+                <div style="text-align:center;color:rgba(255,255,255,0.3);padding:16px;">This ticket is closed</div>
+            `}
+        `;
+        
+        document.getElementById('ticketModal').classList.add('show');
+    } catch (error) {
+        alert('Failed to load ticket details');
+    }
+}
+
+async function submitReply(event, ticketId) {
+    event.preventDefault();
+    const message = document.getElementById('replyMessage').value.trim();
+    if (!message) { alert('Please enter a message'); return; }
+    
+    try {
+        const res = await fetch(`/api/support/${ticketId}/reply`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body: JSON.stringify({ message })
+        });
+        const data = await res.json();
+        if (data.success) {
+            alert('✅ Reply sent!');
+            closeModal();
+            loadTickets();
+        } else {
+            alert('❌ ' + data.message);
+        }
+    } catch (error) {
+        alert('Failed to send reply');
+    }
+}
+
+async function closeTicket(ticketId) {
+    if (!confirm('Are you sure you want to close this ticket?')) return;
+    try {
+        const res = await fetch(`/api/support/${ticketId}/close`, {
+            method: 'PUT',
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success) {
+            alert('✅ Ticket closed!');
+            closeModal();
+            loadTickets();
+        } else {
+            alert('❌ ' + data.message);
+        }
+    } catch (error) {
+        alert('Failed to close ticket');
+    }
+}
+
+function showCreateTicket() {
+    document.getElementById('modalTitle').textContent = 'Create New Ticket';
+    document.getElementById('modalBody').innerHTML = `
+        <form id="createTicketForm" onsubmit="submitTicket(event)">
+            <div class="form-group">
+                <label>Category</label>
+                <select id="ticketCategory" required>
+                    <option value="">Select Category</option>
+                    <option value="deposit">Deposit</option>
+                    <option value="withdraw">Withdraw</option>
+                    <option value="plans">Plans</option>
+                    <option value="referral">Referral</option>
+                    <option value="technical">Technical Problem</option>
+                    <option value="account">Account</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Subject</label>
+                <input type="text" id="ticketSubject" placeholder="Brief subject" required>
+            </div>
+            <div class="form-group">
+                <label>Message</label>
+                <textarea id="ticketMessage" placeholder="Describe your issue..." rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn">📤 Submit Ticket</button>
+        </form>
+    `;
+    document.getElementById('ticketModal').classList.add('show');
+}
+
+async function submitTicket(event) {
+    event.preventDefault();
+    const category = document.getElementById('ticketCategory').value;
+    const subject = document.getElementById('ticketSubject').value.trim();
+    const message = document.getElementById('ticketMessage').value.trim();
+    
+    if (!category || !subject || !message) {
+        alert('Please fill in all fields');
+        return;
+    }
+    
+    try {
+        const res = await fetch('/api/support', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body: JSON.stringify({ category, subject, message })
+        });
+        const data = await res.json();
+        if (data.success) {
+            alert('✅ Ticket created!');
+            closeModal();
+            loadTickets();
+        } else {
+            alert('❌ ' + data.message);
+        }
+    } catch (error) {
+        alert('Failed to create ticket');
+    }
+}
+
+function closeModal() {
+    document.getElementById('ticketModal').classList.remove('show');
+}
+
+loadTickets();
+</script>
+
+</body>
+</html>

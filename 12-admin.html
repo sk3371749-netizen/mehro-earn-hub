@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Mehro Earn Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0a0f;
+            color: #f5f5f7;
+            min-height: 100vh;
+        }
+
+        /* ========== HEADER ========== */
+        .header {
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h2 {
+            color: #ffd700;
+            font-size: 20px;
+        }
+        .header-actions button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            color: #f5f5f7;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .header-actions button:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+        }
+
+        /* ========== CONTAINER ========== */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* ========== PAGE HEADER ========== */
+        .page-header {
+            margin-bottom: 24px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+        }
+        .page-header h1 span {
+            color: #ffd700;
+        }
+        .page-header p {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* ========== STATS GRID ========== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .stat-card .label {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 12px;
+        }
+        .stat-card .value {
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .stat-card .value.gold {
+            color: #ffd700;
+        }
+        .stat-card .value.green {
+            color: #4caf50;
+        }
+        .stat-card .value.red {
+            color: #f44336;
+        }
+        .stat-card .value.blue {
+            color: #2196f3;
+        }
+        .stat-card .value.orange {
+            color: #ff9800;
+        }
+        .stat-card .value.purple {
+            color: #9c27b0;
+        }
+
+        /* ========== GRID ========== */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* ========== CARD ========== */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .card h3 {
+            margin-bottom: 16px;
+            color: #ffd700;
+            font-size: 16px;
+        }
+        .card h3 i {
+            margin-right: 8px;
+        }
+
+        /* ========== ACTIVITY ========== */
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 14px;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-item .time {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 12px;
+        }
+
+        /* ========== NOTIFICATION ========== */
+        .notif-item {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 14px;
+        }
+        .notif-item:last-child {
+            border-bottom: none;
+        }
+        .notif-item .title {
+            color: #ffd700;
+        }
+        .notif-item .time {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 12px;
+        }
+
+        /* ========== BUTTONS ========== */
+        .btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #ffd700, #c9a800);
+            border: none;
+            border-radius: 8px;
+            color: #0a0a0f;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+        }
+        .btn-sm {
+            padding: 4px 12px;
+            font-size: 12px;
+        }
+        .btn-danger {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+        .btn-danger:hover {
+            background: rgba(244, 67, 54, 0.3);
+        }
+        .btn-success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        .btn-success:hover {
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        /* ========== TABLE ========== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        th,
+        td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        th {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        /* ========== BADGE ========== */
+        .badge {
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .badge-success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+        .badge-warning {
+            background: rgba(255, 152, 0, 0.2);
+            color: #ff9800;
+        }
+        .badge-danger {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+        .badge-primary {
+            background: rgba(33, 150, 243, 0.2);
+            color: #2196f3;
+        }
+        .badge-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* ========== TABS ========== */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 4px;
+            border-radius: 12px;
+        }
+        .tab {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        .tab:hover {
+            color: #f5f5f7;
+        }
+        .tab.active {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* ========== FORM ========== */
+        .form-group {
+            margin-bottom: 12px;
+        }
+        .form-group label {
+            display: block;
+            color: #f5f5f7;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            border-radius: 8px;
+            color: #f5f5f7;
+            font-size: 14px;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ffd700;
+        }
+        .form-group select option {
+            background: #1a1a2e;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 992px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== HEADER ========== -->
+    <div class="header">
+        <h2>👨‍💼 Mehro Earn Hub - Admin</h2>
+        <div class="header-actions">
+            <button onclick="window.location.href='01-login.html'">🚪 Logout</button>
+        </div>
+    </div>
+
+    <!-- ========== CONTAINER ========== -->
+    <div class="container">
+
+        <!-- ========== PAGE HEADER ========== -->
+        <div class="page-header">
+            <h1>📊 <span>Admin Dashboard</span></h1>
+            <p>Manage your platform</p>
+        </div>
+
+        <!-- ========== STATS ========== -->
+        <div class="stats-grid" id="adminStats">
+            <div class="stat-card">
+                <div class="label">👥 Total Users</div>
+                <div class="value gold" id="totalUsers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">✅ Active Users</div>
+                <div class="value green" id="activeUsers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">💰 Total Deposits</div>
+                <div class="value blue" id="totalDeposits">0 PKR</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">💸 Total Withdrawals</div>
+                <div class="value red" id="totalWithdraws">0 PKR</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">⏳ Pending Deposits</div>
+                <div class="value orange" id="pendingDeposits">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">⏳ Pending Withdrawals</div>
+                <div class="value orange" id="pendingWithdraws">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">📈 Total Earnings</div>
+                <div class="value gold" id="totalEarnings">0 PKR</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">🆘 Open Tickets</div>
+                <div class="value purple" id="openTickets">0</div>
+            </div>
+        </div>
+
+        <!-- ========== TABS ========== -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+            <button class="tab" onclick="switchTab('users')">👥 Users</button>
+            <button class="tab" onclick="switchTab('plans')">📈 Plans</button>
+            <button class="tab" onclick="switchTab('deposits')">💰 Deposits</button>
+            <button class="tab" onclick="switchTab('withdraws')">💸 Withdrawals</button>
+            <button class="tab" onclick="switchTab('settings')">⚙️ Settings</button>
+        </div>
+
+        <!-- ========== TAB: DASHBOARD ========== -->
+        <div id="tab-dashboard" class="tab-content active">
+            <div class="admin-grid">
+                <div class="card">
+                    <h3>🕐 Recent Activity</h3>
+                    <div id="recentActivity">
+                        <div style="color:rgba(255,255,255,0.3);text-align:center;padding:20px;">Loading...</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>🔔 Recent Notifications</h3>
+                    <div id="recentNotifications">
+                        <div style="color:rgba(255,255,255,0.3);text-align:center;padding:20px;">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== TAB: USERS ========== -->
+        <div id="tab-users" class="tab-content">
+            <div class="card">
+                <h3>👥 All Users</h3>
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>ID</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Wallet</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <tr>
+                                <td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);">Loading users...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== TAB: PLANS ========== -->
+        <div id="tab-plans" class="tab-content">
+            <div style="margin-bottom:12px;">
+                <button class="btn" onclick="showAddPlan()">➕ Add Plan</button>
+            </div>
+            <div class="card">
+                <h3>📈 Investment Plans</h3>
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Daily Income</th>
+                                <th>Duration</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="plansTable">
+                            <tr>
+                                <td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);">Loading plans...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== TAB: DEPOSITS ========== -->
+        <div id="tab-deposits" class="tab-content">
+            <div class="card">
+                <h3>💰 Deposit Requests</h3>
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="depositsTable">
+                            <tr>
+                                <td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);">Loading deposits...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+       <!-- ========== TAB: WITHDRAWALS ========== -->
+        <div id="tab-withdraws" class="tab-content">
+            <div class="card">
+                <h3>💸 Withdrawal Requests</h3>
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="withdrawsTable">
+                            <tr>
+                                <td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);">Loading withdrawals...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== TAB: SETTINGS ========== -->
+        <div id="tab-settings" class="tab-content">
+            <div class="card">
+                <h3>⚙️ Website Settings</h3>
+                <form id="settingsForm" onsubmit="saveSettings(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Website Name</label>
+                            <input type="text" id="setting_website_name" value="Mehro Earn Hub">
+                        </div>
+                        <div class="form-group">
+                            <label>Theme Color</label>
+                            <input type="color" id="setting_theme_color" value="#ffd700" style="width:80px;height:50px;padding:4px;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Footer Text</label>
+                        <input type="text" id="setting_footer_text" value="Designed & Developed by Sanaullah. All Rights Reserved.">
+                    </div>
+                    <div class="form-group">
+                        <label>Developer Credit</label>
+                        <input type="text" id="setting_developer_credit" value="Sanaullah">
+                    </div>
+                    <div class="form-group">
+                        <label>Referral Bonus Amount (PKR)</label>
+                        <input type="number" id="setting_referral_bonus" value="50">
+                    </div>
+                    <div class="form-group">
+                        <label>Referral Salary Amount (PKR)</label>
+                        <input type="number" id="setting_referral_salary" value="10">
+                    </div>
+                    <div class="form-group">
+                        <label>Min Withdraw (PKR)</label>
+                        <input type="number" id="setting_min_withdraw" value="100">
+                    </div>
+                    <button type="submit" class="btn">💾 Save Settings</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========== SCRIPT ========== -->
+    <script>
+        // =============================================
+        // ADMIN TOKEN
+        // =============================================
+        const adminToken = localStorage.getItem('adminToken') || localStorage.getItem('token');
+        if (!adminToken) {
+            const userToken = localStorage.getItem('token');
+            if (userToken) {
+                localStorage.setItem('adminToken', userToken);
+            } else {
+                window.location.href = '01-login.html';
+            }
+        }
+
+        let currentTab = 'dashboard';
+
+        // =============================================
+        // SWITCH TAB
+        // =============================================
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.tab[onclick*="${tab}"]`).classList.add('active');
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            loadTabData(tab);
+        }
+
+        function loadTabData(tab) {
+            switch (tab) {
+                case 'dashboard':
+                    loadDashboard();
+                    break;
+                case 'users':
+                    loadUsers();
+                    break;
+                case 'plans':
+                    loadPlans();
+                    break;
+                case 'deposits':
+                    loadDeposits();
+                    break;
+                case 'withdraws':
+                    loadWithdraws();
+                    break;
+            }
+        }
+
+        // ============================================ 
+        // LOAD DASHBOARD
+        // =============================================
+        async function loadDashboard() {
+            try {
+                const res = await fetch('/api/admin/dashboard', {
+                    headers: { 'Authorization': 'Bearer ' + adminToken }
+                });
+                const data = await res.json();
+                if (!data.success) { throw new Error(data.message); }
+
+                const d = data.data;
+                document.getElementById('totalUsers').textContent = d.users?.total_users || 0;
+                document.getElementById('activeUsers').textContent = d.users?.active_users || 0;
+                document.getElementById('totalDeposits').textContent = (d.deposits?.total_deposit_amount || 0) + ' PKR';
+                document.getElementById('totalWithdraws').textContent = (d.withdraws?.total_withdraw_amount || 0) + ' PKR';
+                document.getElementById('pendingDeposits').textContent = d.deposits?.pending || 0;
+                document.getElementById('pendingWithdraws').textContent = d.withdraws?.pending || 0;
+                document.getElementById('totalEarnings').textContent = (d.earnings?.total_earnings || 0) + ' PKR';
+                document.getElementById('openTickets').textContent = (d.tickets?.open || 0) + (d.tickets?.in_progress || 0);
+
+                // Activities
+                const activities = d.recent_activities || [];
+                document.getElementById('recentActivity').innerHTML = activities.length === 0 ?
+                    '<div style="color:rgba(255,255,255,0.3);text-align:center;padding:20px;">No recent activity</div>' :
+                    activities.slice(0, 10).map(a => `
+                        <div class="activity-item">
+                            <span>${a.description || a.action}</span>
+                            <span class="time">${new Date(a.created_at).toLocaleString()}</span>
+                        </div>
+`).join('');
+
+                // Notifications
+                const notifs = d.recent_notifications || [];
+                document.getElementById('recentNotifications').innerHTML = notifs.length === 0 ?
+                    '<div style="color:rgba(255,255,255,0.3);text-align:center;padding:20px;">No notifications</div>' :
+                    notifs.slice(0, 10).map(n => `
+                        <div class="notif-item">
+                            <div class="title">${n.title}</div>
+                            <div>${n.message}</div>
+                            <div class="time">${new Date(n.created_at).toLocaleString()}</div>
+                        </div>
+                    `).join('');
+            } catch (error) {
+                console.error('Dashboard error:', error);
+            }
+        }
+
+        // =============================================
+        // LOAD USERS
+        // =============================================
+        async function loadUsers() {
+            try {
+                const res = await fetch('/api/admin/users?limit=20', {
+                    headers: { 'Authorization': 'Bearer ' + adminToken }
+                });
+                const data = await res.json();
+                if (!data.success) { throw new Error(data.message); }
+
+                const users = data.data.data || [];
+                const tbody = document.getElementById('usersTable');
+                if (users.length === 0) {
+                    tbody.innerHTML =
+                        '<tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);">No users found</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = users.map(u => `
+                        <tr>
+                            <td>${u.full_name}</td>
+                            <td>${u.user_id}</td>
+                            <td>${u.email}</td>
+                            <td><span class="badge badge-${u.status === 'active' ? 'success' : u.status === 'suspended' ? 'danger' : 'secondary'}">${u.status}</span></td>
+                            <td>${u.wallet_balance || 0} PKR</td>
+                            <td>
+                                <button class="btn btn-sm" onclick="changeUserStatus(${u.id}, 'active')">✅</button>
+                                <button class="btn btn-sm btn-danger" onclick="changeUserStatus(${u.id}, 'suspended')">⛔</button>
+                            </td>
+                        </tr>
+                    `).join('');
+            } catch (error) {
+                console.error('Users error:', error);
+            }
+        }
+
+        async function changeUserStatus(userId, status) {
+            if (!confirm(`Change user status to ${status}?`)) return;
+            try {
+                await fetch(`/api/admin/users/${userId}/status`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + adminToken },
+                    body: JSON.stringify({ status })
+                });
+                alert('✅ Status updated!');
+                loadUsers();
+            } catch (error) {
+                alert('Failed to update status');
+            }
+        }
+
+        // =============================================
+        // LOAD PLANS
+        // =============================================
+        async function loadPlans() {
+            try {
+                const res = await fetch('/api/plans/admin/all', {
+                    headers: { 'Authorization': 'Bearer ' + adminToken }
+                });
+                const data = await res.json();
+                if (!data.success) { throw new Error(data.message); }
+
+                const plans = data.data.plans || [];
+                const tbody = document.getElementById('plansTable');
+                if (plans.length === 0) {
+                    tbody.innerHTML =
+                        '<tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);">No plans found</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = plans.map(p => `
+                        <tr>
+                            <td>${p.plan_name}</td>
+                            <td>${p.price} PKR</td>
+                            <td>${p.daily_income} PKR</td>
+                            <td>${p.duration} days</td>
+                            <td><span class="badge badge-${p.status === 'active' ? 'success' : 'secondary'}">${p.status}</span></td>
+                            <td>
+                                <button class="btn btn-sm" onclick="togglePlan(${p.id}, '${p.status}')">${p.status === 'active' ? '⏸️' : '▶️'}</button>
+                                <button class="btn btn-sm btn-danger" onclick="deletePlan(${p.id})">🗑️</button>
+                            </td>
+                        </tr>
+                    `).join('');
+            } catch (error) {
+                console.error('Plans error:', error);
+            }
+        }
+
+        async function togglePlan(planId, currentStatus) {
+            const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+            if (!confirm(`Set plan to ${newStatus}?`)) return;
+            try {
+                await fetch(`/api/plans/admin/${planId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + adminToken },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                alert('✅ Plan updated!');
+                loadPlans();
+            } catch (error) {
+                alert('Failed to update plan');
+            }
+        }
+
+        async function deletePlan(planId) {
+            if (!confirm('Delete this plan?')) return;
+            try {
+                await fetch(`/api/plans/admin/${planId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + adminToken }
+                });
+                alert('✅ Plan deleted!');
+                loadPlans();
+            } catch (error) {
+                alert('Failed to delete plan');
+            }
+        }
+
+        function showAddPlan() {
+            const name = prompt('Enter plan name:');
+            if (!name) return;
+            const price = prompt('Enter price (PKR):');
+            if (!price) return;
+            const dailyIncome = prompt('Enter daily income (PKR):');
+            if (!dailyIncome) return;
+            const duration = prompt('Enter duration (days):');
+            if (!duration) return;
+            const totalProfit = prompt('Enter total profit (PKR):');
+            if (!totalProfit) return;
+
+            fetch('/api/plans/admin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + adminToken },
+                body: JSON.stringify({
+                    plan_name: name,
+                    price: parseFloat(price),
+                    daily_income: parseFloat(dailyIncome),
+                    duration: parseInt(duration),
+                    total_profit: parseFloat(totalProfit),
+                    status: 'active'
+                })
+            }).then(res => res.json()).then(data => {
+                if (data.success) { alert('✅ Plan created!');
+                    loadPlans(); } else { alert('❌ ' + data.message); }
+            }).catch(() => alert('Failed to create plan'));
+        }
+
+        // =============================================
+
+// LOAD DEPOSITS
+        // =============================================
+        async function loadDeposits() {
+            try {
+                const res = await fetch('/api/deposit/admin/all?limit=20', {
+                    headers: { 'Authorization': 'Bearer ' + adminToken }
+                });
+                const data = await res.json();
+                if (!data.success) { throw new Error(data.message); }
+
+                const deposits = data.data.data || [];
+                const tbody = document.getElementById('depositsTable');
+                if (deposits.length === 0) {
+                    tbody.innerHTML =
+                        '<tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);">No deposits found</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = deposits.map(d => `
+                        <tr>
+                            <td>${d.full_name}</td>
+                            <td>${d.amount} PKR</td>
+                            <td>${d.payment_method || 'N/A'}</td>
+                            <td><span class="badge badge-${d.status === 'pending' ? 'warning' : d.status === 'approved' ? 'success' : 'danger'}">${d.status}</span></td>
+                            <td>${new Date(d.created_at).toLocaleDateString()}</td>
+                            <td>
+                                ${d.status === 'pending' ? `
+                                    <button class="btn btn-sm btn-success" onclick="approveDeposit(${d.id})">✅</button>
+                                    <button class="btn btn-sm btn-danger" onclick="rejectDeposit(${d.id})">❌</button>
+                                ` : ''}
+                            </td>
+                        </tr>
+                    `).join('');
+            } catch (error) {
+                console.error('Deposits error:', error);
+            }
+        }
+
+        async function approveDeposit(depositId) {
+            if (!confirm('Approve this deposit?')) return;
+            try {
+                await fetch(`/api/deposit/admin/${depositId}/approve`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': 'Bearer ' + adminToken }
+                });
+                alert('✅ Deposit approved!');
+                loadDeposits();
+            } catch (error) {
+                alert('Failed to approve deposit');
+            }
+        }
+
+        async function rejectDeposit(depositId) {
+            if (!confirm('Reject this deposit?')) return;
+            try {
+                await fetch(`/api/deposit/admin/${depositId}/reject`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': 'Bearer ' + adminToken }
+                });
+                alert('✅ Deposit rejected!');
+                loadDeposits();
+            } catch (error) {
+                alert('Failed to reject deposit');
+            }
+        }
+
+        // =============================================
+        // LOAD WITHDRAWALS
+        // =============================================
+        async function loadWithdraws() {
+            try {
+                const res = await fetch('/api/withdraw/admin/all?limit=20', {
+                    headers: { 'Authorization': 'Bearer ' + adminToken }
+                });
+                const data = await res.json();
+                if (!data.success) { throw new Error(data.message); }
+
+                const withdraws = data.data.data || [];
+                const tbody = document.getElementById('withdrawsTable');
+                if (withdraws.length === 0) {
+                    tbody.innerHTML =
+                        '<tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);">No withdrawals found</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = withdraws.map(w => `
+                        <tr>
+                            <td>${w.full_name}</td>
+                            <td>${w.amount} PKR</td>
+                            <td>${w.payment_method}</td>
+                            <td><span class="badge badge-${w.status === 'pending' ? 'warning' : w.status === 'approved' ? 'primary' : w.status === 'paid' ? 'success' : 'danger'}">${w.status}</span></td>
+                            <td>${new Date(w.created_at).toLocaleDateString()}</td>
+                            <td>
+                                ${w.status === 'pending' ? `
+                                    <button class="btn btn-sm btn-success" onclick="approveWithdraw(${w.id})">✅</button>
+                                    <button class="btn btn-sm btn-danger" onclick="rejectWithdraw(${w.id})">❌</button>
+                                ` : ''}
+                                ${w.status === 'approved' ? `
+                                    <button class="btn btn-sm" onclick="markPaid(${w.id})">💰 Paid</button>
+                                ` : ''}
+                            </td>
+                        </tr>
+                    `).join('');
+            } catch (error) {
+                console.error('Withdrawals error:', error);
+            }
+        }
+
+        async function approveWithdraw(withdrawId) {
+            if (!confirm('Approve this withdrawal?')) return;
+            try {
+                await fetch(`/api/withdraw/admin/${withdrawId}/approve`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': 'Bearer ' + adminToken }
+                });
+                alert('✅ Withdrawal approved!');
+                loadWithdraws();
+            } catch (error) {
+                alert('Failed to approve withdrawal');
+            }
+        }
+
+        async function rejectWithdraw(withdrawId) {
+            if (!confirm('Reject this withdrawal?')) return;
+            try {
+                await fetch(`/api/withdraw/admin/${withdrawId}/reject`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': 'Bearer ' + adminToken }
+                });
+                alert('✅ Withdrawal rejected!');
+                loadWithdraws();
+            } catch (error) {
+                alert('Failed to reject withdrawal');
+            }
+        }
+
+        async function markPaid(withdrawId) {
+            if (!confirm('Mark this withdrawal as paid?')) return;
+            try {
+                await fetch(`/api/withdraw/admin/${withdrawId}/paid`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': 'Bearer ' + adminToken }
+                });
+                alert('✅ Marked as paid!');
+                loadWithdraws();
+            } catch (error) {
+                alert('Failed to mark as paid');
+            }
+        }
+
+        // =============================================
+        // SAVE SETTINGS
+        // =============================================
+        async function saveSettings(event) {
+            event.preventDefault();
+            const settings = {
+                website_name: document.getElementById('setting_website_name').value,
+                theme_color: document.getElementById('setting_theme_color').value,
+                footer_text: document.getElementById('setting_footer_text').value,
+                developer_credit: document.getElementById('setting_developer_credit').value,
+                referral_bonus_amount: document.getElementById('setting_referral_bonus').value,
+                referral_salary_amount: document.getElementById('setting_referral_salary').value,
+                min_withdraw: document.getElementById('setting_min_withdraw').value
+            };
+
+            try {
+                const res = await fetch('/api/settings/admin/multiple', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + adminToken },
+                    body: JSON.stringify({ settings })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('✅ Settings saved!');
+                } else {
+                    alert('❌ ' + data.message);
+                }
+            } catch (error) {
+                alert('Failed to save settings');
+            }
+        }
+
+        // =============================================
+        // LOAD INITIAL DATA
+        // =============================================
+        loadDashboard();
+    </script>
+
+</body>
+</html>
