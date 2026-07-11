@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral - Mehro Earn Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0a0f;
+            color: #f5f5f7;
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(10,10,15,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,215,0,0.15);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h2 { color: #ffd700; font-size: 20px; }
+        .header-actions button {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.15);
+            color: #f5f5f7;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .header-actions button:hover { background: rgba(255,215,0,0.1); border-color: #ffd700; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+        .page-header { margin-bottom: 24px; }
+        .page-header h1 { font-size: 28px; }
+        .page-header h1 span { color: #ffd700; }
+        .page-header p { color: rgba(255,255,255,0.5); }
+        .referral-link-box {
+            display: flex;
+            gap: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.15);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .referral-link-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #f5f5f7;
+            font-size: 14px;
+            padding: 8px;
+            min-width: 150px;
+        }
+        .referral-link-box input:focus { outline: none; }
+        .referral-link-box button {
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #ffd700, #c9a800);
+            border: none;
+            border-radius: 8px;
+            color: #0a0a0f;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .referral-link-box button:hover { transform: scale(1.05); }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.1);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .stat-card .label { color: rgba(255,255,255,0.3); font-size: 12px; }
+        .stat-card .value { font-size: 22px; font-weight: bold; color: #ffd700; }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .card h3 { margin-bottom: 16px; color: #ffd700; }
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        .setting-item {
+            background: rgba(255,255,255,0.03);
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,215,0,0.05);
+        }
+        .setting-item .label { color: rgba(255,255,255,0.3); font-size: 12px; }
+        .setting-item .value { font-size: 16px; font-weight: bold; }
+        .setting-item .status { font-size: 12px; padding: 2px 10px; border-radius: 20px; }
+        .status-active { background: rgba(76,175,80,0.2); color: #4caf50; }
+        .status-inactive { background: rgba(255,152,0,0.2); color: #ff9800; }
+        .referral-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .referral-item:last-child { border-bottom: none; }
+        .referral-item .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,215,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        .referral-item .info { flex: 1; }
+        .referral-item .info .name { font-size: 14px; }
+        .referral-item .info .detail { font-size: 12px; color: rgba(255,255,255,0.3); }
+        .referral-item .status { font-size: 12px; padding: 2px 10px; border-radius: 20px; }
+        .status-active { background: rgba(76,175,80,0.2); color: #4caf50; }
+        .status-pending { background: rgba(255,152,0,0.2); color: #ff9800; }
+        .status-inactive { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); }
+        @media (max-width: 768px) { .referral-link-box { flex-direction: column; } }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>✨ Mehro Earn Hub</h2>
+    <div class="header-actions">
+        <button onclick="window.location.href='03-dashboard.html'">⬅ Back</button>
+        <button onclick="window.location.href='01-login.html'">Logout</button>
+    </div>
+</div>
+
+<div class="container">
+    <div class="page-header">
+        <h1>👥 <span>Referral Program</span></h1>
+        <p>Refer friends and earn bonuses</p>
+    </div>
+
+    <div class="referral-link-box">
+        <input type="text" id="referralLink" readonly value="Loading...">
+        <button onclick="copyReferralLink()">📋 Copy</button>
+        <button onclick="shareReferralLink()">📤 Share</button>
+    </div>
+
+    <div class="stats-grid" id="referralStats">
+        <div class="stat-card"><div class="label">Total Referrals</div><div class="value" id="totalRefs">0</div></div>
+        <div class="stat-card"><div class="label">Active</div><div class="value" id="activeRefs">0</div></div>
+        <div class="stat-card"><div class="label">Pending</div><div class="value" id="pendingRefs">0</div></div>
+        <div class="stat-card"><div class="label">Today</div><div class="value" id="todayRefs">0</div></div>
+        <div class="stat-card"><div class="label">Total Bonus</div><div class="value" id="totalBonus">0 PKR</div></div>
+        <div class="stat-card"><div class="label">Total Salary</div><div class="value" id="totalSalary">0 PKR</div></div>
+    </div>
+
+    <div class="card">
+        <h3>⚙️ Referral Settings</h3>
+        <div class="settings-grid" id="referralSettings">
+            <div class="setting-item">
+                <div class="label">Bonus Amount</div>
+                <div class="value" id="bonusAmount">50 PKR</div>
+                <span class="status status-active" id="bonusStatus">Active</span>
+            </div>
+            <div class="setting-item">
+                <div class="label">Salary Amount</div>
+                <div class="value" id="salaryAmount">10 PKR</div>
+                <span class="status status-active" id="salaryStatus">Active</span>
+            </div>
+            <div class="setting-item">
+                <div class="label">Min Active Referrals</div>
+                <div class="value" id="minActive">5</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>📋 My Referrals</h3>
+        <div id="referralList">
+            <div style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;">Loading referrals...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) { window.location.href = '01-login.html'; }
+
+async function loadReferralData() {
+    try {
+        const res = await fetch('/api/referral/stats', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (!data.success) { throw new Error(data.message); }
+        
+        const stats = data.data.stats || {};
+        const settings = data.data.settings || {};
+        
+        document.getElementById('totalRefs').textContent = stats.total_referrals || 0;
+        document.getElementById('activeRefs').textContent = stats.active_referrals || 0;
+        document.getElementById('pendingRefs').textContent = stats.pending_referrals || 0;
+        document.getElementById('todayRefs').textContent = stats.today_referrals || 0;
+        document.getElementById('totalBonus').textContent = (stats.total_bonus || 0) + ' PKR';
+        document.getElementById('totalSalary').textContent = (stats.total_salary || 0) + ' PKR';
+        
+        document.getElementById('bonusAmount').textContent = (settings.bonus_amount || 50) + ' PKR';
+        document.getElementById('bonusStatus').textContent = settings.bonus_enabled ? 'Active' : 'Inactive';
+        document.getElementById('bonusStatus').className = 'status ' + (settings.bonus_enabled ? 'status-active' : 'status-inactive');
+        document.getElementById('salaryAmount').textContent = (settings.salary_amount || 10) + ' PKR';
+        document.getElementById('salaryStatus').textContent = settings.salary_enabled ? 'Active' : 'Inactive';
+        document.getElementById('salaryStatus').className = 'status ' + (settings.salary_enabled ? 'status-active' : 'status-inactive');
+        document.getElementById('minActive').textContent = settings.min_active_referrals || 5;
+        
+        // Load referral link
+        await loadReferralLink();
+        // Load referral list
+        await loadReferralList();
+    } catch (error) {
+        console.error('Referral error:', error);
+    }
+}
+
+async function loadReferralLink() {
+    try {
+        const res = await fetch('/api/referral/link', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success) {
+            document.getElementById('referralLink').value = data.data.referral_link || 'Loading...';
+        }
+    } catch (error) { console.error('Link error:', error); }
+}
+
+async function loadReferralList() {
+    try {
+        const res = await fetch('/api/referral/list', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (!data.success) { throw new Error(data.message); }
+        
+        const referrals = data.data.referrals || [];
+        const container = document.getElementById('referralList');
+        
+        if (referrals.length === 0) {
+            container.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;">No referrals yet. Share your link!</div>';
+            return;
+        }
+        
+        container.innerHTML = referrals.map(r => `
+            <div class="referral-item">
+                <div class="avatar">${r.full_name ? r.full_name.charAt(0).toUpperCase() : 'U'}</div>
+                <div class="info">
+                    <div class="name">${r.full_name || 'User'}</div>
+                    <div class="detail">${r.user_id || ''} • Joined ${new Date(r.created_at).toLocaleDateString()}</div>
+                </div>
+                <span class="status status-${r.status}">${r.status || 'Pending'}</span>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('List error:', error);
+    }
+}
+
+function copyReferralLink() {
+    const input = document.getElementById('referralLink');
+    input.select();
+    document.execCommand('copy');
+    alert('✅ Referral link copied!');
+}
+
+function shareReferralLink() {
+    const link = document.getElementById('referralLink').value;
+    if (navigator.share) {
+        navigator.share({ title: 'Join Mehro Earn Hub', text: 'Join Mehro Earn Hub and start earning!', url: link });
+    } else {
+        copyReferralLink();
+    }
+}
+
+loadReferralData();
+</script>
+
+</body>
+</html>
